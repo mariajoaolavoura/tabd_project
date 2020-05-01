@@ -1,0 +1,45 @@
+# get 1st 10 taxis from Porto
+select tr.taxi
+from cont_aad_caop2018 as caop, tracks as tr
+where caop.concelho='PORTO' and
+	  st_within(st_pointn(tr.proj_track,1), caop.proj_boundary) and
+	  tr.state='BUSY'
+order by tr.ts asc
+limit 10;
+
+   taxi
+----------
+ 20000333
+ 20000450
+ 20000021
+ 20000850
+ 20000684
+ 20000199
+ 20000356
+ 20000474
+ 20000409
+ 20000598
+(10 rows)
+
+# get 1st 10 taxis from Lisbon
+select tr.taxi
+from cont_aad_caop2018 as caop, tracks as tr
+where caop.concelho='LISBOA' and
+	  st_within(st_pointn(tr.proj_track,1), caop.proj_boundary) and
+	  tr.state='BUSY'
+order by tr.ts asc
+limit 10;
+
+   taxi
+----------
+ 20093187
+ 20092692
+ 20091298
+ 20090980
+ 20091393
+ 20093322
+ 20091181
+ 20092397
+ 20091020
+ 20090006
+(10 rows)
