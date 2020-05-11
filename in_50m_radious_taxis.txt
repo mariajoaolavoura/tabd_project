@@ -1,0 +1,29 @@
+
+
+select tr1.taxi as taxi_1, tr2.taxi as taxi_2, tr1.ts as ts, st_distance(tr1.proj_track, tr2.proj_track) as dist, st_pointn(tr1.proj_track, i-ts) 
+from tracks as tr1, tracks as tr2
+where tr1.taxi != tr2.taxi and tr1.ts = tr2.ts and 
+	  st_distance(tr1.proj_track, tr2.proj_track) <= 50 and
+	  ts<i and ts+st_numpoints(proj_track)>i
+order by ts asc;
+
+
+# ts_i = 1570665600
+# ts_f = 1570667000
+# step = 10
+
+select	tr1.taxi as taxi_1, tr2.taxi as taxi_2, 
+		tr1.ts as ts, 
+		st_distance(tr1.proj_track, tr2.proj_track) as dist, 
+		st_pointn(tr1.proj_track, 1570665700-tr1.ts) 
+from tracks as tr1, tracks as tr2
+where tr1.taxi != tr2.taxi and tr1.ts = tr2.ts and 
+	  st_distance(tr1.proj_track, tr2.proj_track) <= 50 and
+	  tr1.ts<1570665700 and tr1.ts+st_numpoints(tr1.proj_track)>1570665700
+order by tr1.ts asc;
+
+
+
+select taxi, st_pointn(proj_track, i-ts) 
+from tracks 
+where ts<i and ts+st_numpoints(proj_track)>i
