@@ -42,10 +42,14 @@ def update_to_infected(pos):
 
 def distanceUnder(dist, lista, coord):
     index_coord = []
-    x = list(filter(lambda i: math.hypot((i[0]-coord[0]),(i[1]-coord[1])) < dist , lista))  
-    if(x != [] and (x not in index_coord)):
-        index_coord.append(x)
+    j=0
+    for i in lista:
+        if(math.hypot((i[0]-coord[0]),(i[1]-coord[1])) < dist):
+            index_coord.append(j)
+        j+=1
+    #return list(filter(lambda i: math.hypot((i[0]-coord[0]),(i[1]-coord[1])) < dist , lista))  
     return index_coord
+    
 
 
 conn = psycopg2.connect("dbname=TABD user=postgres password=' ' ")
@@ -68,10 +72,13 @@ for taxi_id in results:
 offsets = []
 """
 [
-    [id, id, ... ]
     [ [x,y], [x,y] ... ],
     [ [x,y], [x,y] ... ],
     ...
+]
+
+[
+red, r, g, g, g ....
 ]
 """
 
@@ -138,6 +145,7 @@ for pos in taxi_position:
 
 
 dummy = [0.000000, 0.000000]
+colors, c = [], []
 # offsets [ [ [x,y], ... ], [...]]
 for row in offsets: # row [ [x,y], ... ]
     for i in range(0, len(row)):
@@ -147,19 +155,33 @@ for row in offsets: # row [ [x,y], ... ]
             if (infected):
                 #print("pos="+str(i)+", coor="+str(coord)+", inf="+str(infected)+", counter="+str(counter)+"\n")
                 # verify taxis 50m
-                neig_50m = distanceUnder(50, row, coord) # position in offsets
-                print(neig_50m)
-                """
-                for pos in neig_50m:
+                pos_neig_50m = distanceUnder(50, row, coord) # position in row of offsets
+                #print(pos_neig_50m)
+                for pos in pos_neig_50m:
                     coord = row[pos]
                     infected, counter = taxis_info[pos]
                     if (not infected) :
                         counter += 1
-                    if (counter >= 600 and not infected) :
+                        taxis_info[pos] = [infected, counter]
+                        #print("counter ++")
+                        #print(taxis_info[pos])
+                    if (counter >= 60 and not infected) :
                         update_to_infected(pos)
-                """
+                        print("update to infected")
+                        print(taxis_info[pos])
+        #print("\n\n")
+        #c += [ "red" if taxis_info[i][0] else "green" ]
+    #colors.append(c)   
+    #print(colors)
+    #print("")
 
+#TODO:
+# colors not correct
+# 10% - 1min, 10min para infetado, 
+# random(1, 10)==5
 
+#print(len(offsets[0]))
+#print(len(colors[0]))
 # initialization
 """
 x,y = [],[]
