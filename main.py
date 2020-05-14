@@ -74,7 +74,7 @@ offsets = []
 ]
 """
 
-with open('./offsets3.csv', 'r') as csvFile:
+with open('./../data/offsets3.csv', 'r') as csvFile:
     reader = csv.reader(csvFile)
     i = 0
     for row in reader:
