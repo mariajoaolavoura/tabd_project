@@ -42,10 +42,11 @@ def update_to_infected(pos):
 
 def distanceUnder(dist, lista, coord):
     index_coord = []
-    x = list(filter(lambda i: int(math.sqrt(((coord[0]-i[0])^2)+((coord[1]-i[1])^2))) < dist , lista))
+    x = list(filter(lambda i: math.hypot((i[0]-coord[0]),(i[1]-coord[1])) < dist , lista))  
     if(x != [] and (x not in index_coord)):
         index_coord.append(x)
     return index_coord
+
 
 conn = psycopg2.connect("dbname=TABD user=postgres password=' ' ")
 register(conn)
