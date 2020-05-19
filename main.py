@@ -96,7 +96,7 @@ with open('./../data/offsets3.csv', 'r') as csvFile:
 
 
 ## Initialize dictionary
-#d = dictionary{ key=pos_do_taxi, value=[infected, counter] }
+#taxis_info = dictionary{ key=coluna_offsets, value=[infected, counter] }
 n_taxis = len(offsets[0])
 taxis_info = {k:[0,0] for k in range(0, n_taxis)}
 
@@ -147,6 +147,7 @@ for pos in taxi_position:
 dummy = [0.000000, 0.000000]
 colors, c = [], []
 # offsets [ [ [x,y], ... ], [...]]
+# colors [ [ c1, c2, c3, ...], [...]]
 for row in offsets: # row [ [x,y], ... ]
     for i in range(0, len(row)):
         coord = row[i] # coord [x,y]
@@ -165,29 +166,48 @@ for row in offsets: # row [ [x,y], ... ]
                         taxis_info[pos] = [infected, counter]
                         #print("counter ++")
                         #print(taxis_info[pos])
+                    # ts = 10s, 1min= 6 ts, 10min = 60 ts
                     if (counter >= 60 and not infected) :
                         update_to_infected(pos)
-                        print("update to infected")
-                        print(taxis_info[pos])
+                        #print("update to infected")
+                        #print(taxis_info[pos])
         #print("\n\n")
-        #c += [ "red" if taxis_info[i][0] else "green" ]
-    #colors.append(c)   
+        infected = taxis_info[i][0]
+        c += [ "red" if infected else "green" ]
+    
+    colors.append(c)  
+    c = [] 
+    print(len(colors))
     #print(colors)
-    #print("")
 
 #TODO:
 # colors not correct
-# 10% - 1min, 10min para infetado, 
 # random(1, 10)==5
 
-#print(len(offsets[0]))
-#print(len(colors[0]))
+print(len(offsets[0]))
+print(len(colors[0]))
+print(len(offsets))
+print(len(colors))
+#print(colors[0])
+#print(colors[1])
+
+import csv
+with open("./../data/colors.csv", "w", newline="") as csv_file:
+    writer = csv.writer(csv_file, delimiter=',')
+    writer.writerow(colors)
+
 # initialization
-"""
+
 x,y = [],[]
 for i in offsets[0]:
     x.append(i[0])
     y.append(i[1])
+
+
+"""
+prof animate:
+def animate(i):    ax.set_title(datetime.datetime.utcfromtimestamp(ts_i+i*10))    sizes = np.random.randint(50,size=1660)    colors = np.random.random(size=(1660,3))    scat.set_facecolors(colors)    scat.set_sizes(sizes)    scat.set_offsets(offsets[i])
+
 """
 
 """
