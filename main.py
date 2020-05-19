@@ -204,26 +204,72 @@ for row in offsets: # row [ [x,y], ... ]
                         else:
                             taxis_info[neig_column] = [0, 0, 0]
 
-            #print(taxis_info[taxi_column])
         infected = taxis_info[taxi_column][0]
         c += [ "red" if infected else "green" ]
     
+    taxis_info_history.append(taxis_info)
+    
     colors.append(c)  
     c = [] 
-    print(len(colors))
-    #print("\n\n")
+
+    print(len(taxis_info_history))
+
+
+
+with open("./../data/cumulative_colors.csv", "w", newline="") as csv_file:
+    writer = csv.writer(csv_file, delimiter=',')
+    for l in ll: # for list in list of lists
+        print("%f %f" %(l[0][0],l[0][1]),end='', file=csv_file)
+        for j in range(1,len(l)):
+            print(",%f %f" %(l[j][0],l[j][1]),end='', file=csv_file)
+        print("", file=csv_file)
+
+with open("./../data/cumulative_taxis_info_history.csv", "w", newline="") as csv_file:
+    writer = csv.writer(csv_file, delimiter=',')
+    for dic in l:
+        keys = sorted(dic.keys())
+        k = keys[0]
+        print("%s:%s %s %s" % (k, dic[k][0], dic[k][1], dic[k][2]), end="", file=csv_file)
+        for i in range(1,len(keys)):
+            k = keys[i]
+            print(",%s:%s %s %s" % (k, dic[k][0], dic[k][1], dic[k][2]), end="", file=csv_file)
+        print("", file=csv_file)
+
+
 
 """
-import csv
-with open("./../data/colors.csv", "w", newline="") as csv_file:
-    writer = csv.writer(csv_file, delimiter=',')
-    writer.writerow(colors)
+How to read colors from file:
+colors = []
+with open('path', 'r',  newline="") as csvFile:
+    reader = csv.reader(csvFile, delimiter=',')
+    i = 0
+    for row in reader:
+        c = []
+        for j in row:
+            x,y = j.split()
+            x = float(x)
+            y= float(y)
+            c.append([x,y])
+        colors.append(c)
 
-with open("./../data/taxis_info_history.csv", "w", newline="") as csv_file:
-    writer = csv.writer(csv_file, delimiter=',')
-    writer.writerow(taxis_info)
+
+How to read taxis history from file:
+taxis_info_history = []
+with open('path', 'r',  newline="") as csvFile:
+    reader = csv.reader(csvFile, delimiter=',')
+    i = 0
+    for row in reader:
+        d = {}
+        for j in row:
+            k, v = j.split(":")
+            v1, v2, v3 = v.split()
+            d[int(k)] = [ int(v1), int(v2), int(v3)]
+        taxis_info_history.append(d)
 """
 
+
+
+'''
 # initialization
 x,y = [],[]
 for i in offsets[0]:
@@ -267,3 +313,4 @@ anim = FuncAnimation(fig, animate, interval=10, frames=len(offsets)-1, repeat = 
 
 plt.draw()
 plt.show()
+'''
