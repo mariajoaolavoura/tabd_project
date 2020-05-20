@@ -185,9 +185,16 @@ for row in offsets: # row [ [x,y], ... ]
                         neig_contact_time += 1
                         taxis_info[neig_column] = [neig_infected, neig_contact_time, neig_transmission]
                         #print("update neig_contact_time " + str(neig_column) + " " + str(taxis_info[neig_column]))
-                
-                    #if (neig_contact_time >= ts_to_infected and not neig_infected): # if that neigbour reaches the 10min contact, cumulative
-                    
+                    """
+                    Cumulative version
+                    # if that neigbour reaches the 10min contact, cumulative
+                    if (neig_contact_time >= ts_to_infected and not neig_infected): 
+                        # update that neigbour to infected
+                        update_to_infected(neig_column)
+                        # update number of taxis this taxi infected
+                        transmission += 1
+                        taxis_info[taxi_column] = [infected, contact_time, transmission]
+                    """
                     # if that neighbour is not infected and reached 1min contact
                     if (not neig_infected and neig_contact_time >= 6):
                         # guarantee that it's only 10% probability of contamination
@@ -203,6 +210,7 @@ for row in offsets: # row [ [x,y], ... ]
                         # if not 10%, it's not infected and nedds to wait another minute
                         else:
                             taxis_info[neig_column] = [0, 0, 0]
+                    
 
         infected = taxis_info[taxi_column][0]
         c += [ "red" if infected else "green" ]
@@ -216,17 +224,17 @@ for row in offsets: # row [ [x,y], ... ]
 
 
 
-with open("./../data/cumulative_colors.csv", "w", newline="") as csv_file:
+with open("./../data/random_colors.csv", "w", newline="") as csv_file:
     writer = csv.writer(csv_file, delimiter=',')
-    for l in ll: # for list in list of lists
-        print("%f %f" %(l[0][0],l[0][1]),end='', file=csv_file)
+    for l in colors: 
+        print("%s" %(l[0]), end='', file=csv_file)
         for j in range(1,len(l)):
-            print(",%f %f" %(l[j][0],l[j][1]),end='', file=csv_file)
+            print(",%s" %(l[j]),end='', file=csv_file)
         print("", file=csv_file)
 
-with open("./../data/cumulative_taxis_info_history.csv", "w", newline="") as csv_file:
+with open("./../data/random_taxis_info_history.csv", "w", newline="") as csv_file:
     writer = csv.writer(csv_file, delimiter=',')
-    for dic in l:
+    for dic in taxis_info_history:
         keys = sorted(dic.keys())
         k = keys[0]
         print("%s:%s %s %s" % (k, dic[k][0], dic[k][1], dic[k][2]), end="", file=csv_file)
@@ -246,10 +254,7 @@ with open('path', 'r',  newline="") as csvFile:
     for row in reader:
         c = []
         for j in row:
-            x,y = j.split()
-            x = float(x)
-            y= float(y)
-            c.append([x,y])
+            c.append(j)
         colors.append(c)
 
 
