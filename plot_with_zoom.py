@@ -20,12 +20,68 @@ def animate(i):
     scat.set_offsets(offsets[i])
 """
 
-def get_zoom_limits(x_initial, y_initial, x_final, y_final):
-    xlim_min = (1-animate.counter)*x_initial[0] + animate.counter*x_final[0]
-    xlim_max = (1-animate.counter)*x_initial[1] + animate.counter*x_final[1]
-    ylim_min = (1-animate.counter)*y_initial[0] + animate.counter*y_final[0]
-    ylim_max = (1-animate.counter)*y_initial[1] + animate.counter*y_final[1]
+def get_zoom_limits(x_initial, y_initial, x_final, y_final, counter):
+    xlim_min = (1-counter)*x_initial[0] + counter*x_final[0]
+    xlim_max = (1-counter)*x_initial[1] + counter*x_final[1]
+    ylim_min = (1-counter)*y_initial[0] + counter*y_final[0]
+    ylim_max = (1-counter)*y_initial[1] + counter*y_final[1]
     return (xlim_min, xlim_max), (ylim_min, ylim_max)
+
+
+def perform_zoom(d):
+    # zoom in Lisbon
+    if d.hour >= 1 and d.hour < 2 and perform_zoom.counter < 1:
+        perform_zoom.counter += step
+        xlim, ylim = get_zoom_limits(x_origin, y_origin, lisbon_xlim, lisbon_ylim, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
+        
+    # zoom out
+    elif d.hour >= 2 and d.hour < 3 and perform_zoom.counter > 0:
+        perform_zoom.counter -= step
+        xlim, ylim = get_zoom_limits(x_origin, y_origin, lisbon_xlim, lisbon_ylim, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
+
+    # zoom in Porto
+    elif d.hour >= 3 and d.hour < 4 and perform_zoom.counter < 1:
+        perform_zoom.counter += step
+        xlim, ylim = get_zoom_limits(x_origin, y_origin, porto_xlim, porto_ylim, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
+        
+    # zoom in Aveiro 
+    elif d.hour >= 4 and d.hour < 5 and perform_zoom.counter > 0:
+        perform_zoom.counter -= step
+        xlim, ylim = get_zoom_limits(aveiro_xlim, aveiro_ylim, porto_xlim, porto_ylim, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
+    
+    # zoom in Coimbra
+    elif d.hour >= 5 and d.hour < 6 and perform_zoom.counter < 1:
+        perform_zoom.counter += step
+        xlim, ylim = get_zoom_limits(aveiro_xlim, aveiro_ylim, coimbra_xlim, coimbra_ylim, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
+        
+    # zoom in Lisbon
+    elif d.hour >= 6 and d.hour < 7 and perform_zoom.counter > 0:
+        perform_zoom.counter -= step
+        xlim, ylim = get_zoom_limits(lisbon_xlim, lisbon_ylim, coimbra_xlim, coimbra_ylim, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
+
+    # zoom out
+    elif d.hour >= 7 and d.hour < 18 and perform_zoom.counter < 1:
+        perform_zoom.counter += step
+        xlim, ylim = get_zoom_limits(lisbon_xlim, lisbon_ylim, x_origin, y_origin, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
+
+    # zoom in Braga
+    elif d.hour >= 18 and d.hour < 20 and perform_zoom.counter > 0:
+        perform_zoom.counter -= step
+        xlim, ylim = get_zoom_limits(braga_xlim, braga_ylim, x_origin, y_origin, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
+
+    # zoom out
+    elif d.hour >= 20 and perform_zoom.counter < 1:
+        perform_zoom.counter += step
+        xlim, ylim = get_zoom_limits(braga_xlim, braga_ylim, x_origin, y_origin, perform_zoom.counter)
+        ax.set(xlim=xlim, ylim=ylim)
 
 
 def animate(i):
@@ -33,90 +89,41 @@ def animate(i):
     ax.set_title(d)
     scat.set_offsets(offsets[i])
     scat.set_facecolor(colors[i])
-
-    # zoom in Lisbon
-    if d.hour >= 1 and d.hour < 2 and animate.counter < 1:
-        animate.counter += step
-        xlim, ylim = get_zoom_limits(x_origin, y_origin, lisbon_xlim, lisbon_ylim)
-        ax.set(xlim=xlim, ylim=ylim)
-        
-    # zoom out
-    elif d.hour >= 2 and d.hour < 3 and animate.counter > 0:
-        animate.counter -= step
-        xlim, ylim = get_zoom_limits(x_origin, y_origin, lisbon_xlim, lisbon_ylim)
-        ax.set(xlim=xlim, ylim=ylim)
-
-    # zoom in Porto
-    elif d.hour >= 3 and d.hour < 4 and animate.counter < 1:
-        animate.counter += step
-        xlim, ylim = get_zoom_limits(x_origin, y_origin, porto_xlim, porto_ylim)
-        ax.set(xlim=xlim, ylim=ylim)
-        
-    # zoom in Aveiro 
-    elif d.hour >= 4 and d.hour < 5 and animate.counter > 0:
-        animate.counter -= step
-        xlim, ylim = get_zoom_limits(aveiro_xlim, aveiro_ylim, porto_xlim, porto_ylim)
-        ax.set(xlim=xlim, ylim=ylim)
+    perform_zoom(d)
     
-    # zoom in Coimbra
-    elif d.hour >= 5 and d.hour < 6 and animate.counter < 1:
-        animate.counter += step
-        xlim, ylim = get_zoom_limits(aveiro_xlim, aveiro_ylim, coimbra_xlim, coimbra_ylim)
-        ax.set(xlim=xlim, ylim=ylim)
-        
-    # zoom in Lisbon
-    elif d.hour >= 6 and d.hour < 7 and animate.counter > 0:
-        animate.counter -= step
-        xlim, ylim = get_zoom_limits(lisbon_xlim, lisbon_ylim, coimbra_xlim, coimbra_ylim)
-        ax.set(xlim=xlim, ylim=ylim)
 
-    # zoom out
-    elif d.hour >= 7 and d.hour < 18 and animate.counter < 1:
-        animate.counter += step
-        xlim, ylim = get_zoom_limits(lisbon_xlim, lisbon_ylim, x_origin, y_origin)
-        ax.set(xlim=xlim, ylim=ylim)
+# Variables
 
-    # zoom in Braga
-    elif d.hour >= 18 and d.hour < 20 and animate.counter > 0:
-        animate.counter -= step
-        xlim, ylim = get_zoom_limits(braga_xlim, braga_ylim, x_origin, y_origin)
-        ax.set(xlim=xlim, ylim=ylim)
-
-    # zoom out
-    elif d.hour >= 20 and animate.counter < 1:
-        animate.counter += step
-        xlim, ylim = get_zoom_limits(braga_xlim, braga_ylim, x_origin, y_origin)
-        ax.set(xlim=xlim, ylim=ylim)
-        
-
-animate.counter = 0
+# to perform zoom
+perform_zoom.counter = 0
 step = 0.01
 
-#Braga
+# limits of
+# Braga
 braga_xlim = (-42618, -3999)
 braga_ylim = (185175, 232998)
 
-#Porto
+# Porto
 #center_lon = -41601.3030699869
 #center_lat = 165663.59287178 
 porto_xlim = (-58181, -14895)
 porto_ylim = (137414, 202794)
 
-#Aveiro
+# Aveiro
 aveiro_xlim = (-55299, -26326)
 aveiro_ylim = (80718, 128542)
 
-#Coimbra
+# Coimbra
 #center_lon = -23602.1779130802
 #center_lat = 59444.2411470825
 coimbra_xlim = (-39160, -14951)
 coimbra_ylim = (30377, 93303)
 
-#Sintra
+# Sintra
 #center_lon = -108167.564175462
 #center_lat = -95655.0195241774
 
-#Lisboa
+# Lisboa
 #center_lon = -87973.4688070632
 #center_lat = -103263.891293955
 lisbon_xlim = (-119311, -58144)
@@ -247,3 +254,5 @@ anim = FuncAnimation(fig, animate, interval=10, frames=len(offsets)-1, repeat = 
 
 plt.draw()
 plt.show()
+
+anim.save('plot_with_zoom.gif', writer='imagemagick')

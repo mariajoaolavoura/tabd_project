@@ -4,6 +4,9 @@ import psycopg2
 import math
 from matplotlib.animation import FuncAnimation
 import datetime
+import csv
+from postgis import Polygon,MultiPolygon
+from postgis.psycopg import register
 
 ## Functions
 """
@@ -35,6 +38,7 @@ offsets = []
     ...
 ]
 """
+
 with open('./../data/offsets3.csv', 'r') as csvFile:
     reader = csv.reader(csvFile)
     i = 0
@@ -46,27 +50,49 @@ with open('./../data/offsets3.csv', 'r') as csvFile:
             y= float(y)
             l.append([x,y])
         offsets.append(l)
-
+        
 
 # Read colors file
 colors = []
 """
 [
-    [ c1, c2, c3, ...]
+    [ c1, c2, c3, ...],
     [...],
     ...
 ]
 """
-# Verify
-with open('./../data/colors.csv', 'r') as csvFile:
-    reader = csv.reader(csvFile)
+with open('./../data/random_colors.csv', 'r',  newline="") as csvFile:
+    reader = csv.reader(csvFile, delimiter=',')
     i = 0
     for row in reader:
-        colors.append(row)
+        c = []
+        for j in row:
+            c.append(j)
+        colors.append(c)
 
 
 # Read taxis_info_history
 taxis_info_history = []
+"""
+[
+    { 0:[i,c,c], 1:[], ... }, 
+    {...}, 
+    ...
+]
+"""
+"""
+with open('./../data/random_taxis_info_history.csv', 'r',  newline="") as csvFile:
+    reader = csv.reader(csvFile, delimiter=',')
+    i = 0
+    for row in reader:
+        d = {}
+        for j in row:
+            k, v = j.split(":")
+            v1, v2, v3 = v.split()
+            d[int(k)] = [ int(v1), int(v2), int(v3)]
+        taxis_info_history.append(d)
+
+"""
 
 
 
