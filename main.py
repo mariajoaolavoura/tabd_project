@@ -35,7 +35,7 @@ For row in offset:
 Tasks distribution:
 Fernando - Mapa, tracks
 Lúcia - Histograms, grafico curva exponencial
-MJ - Zooms, size
+MJ - Zooms, size da bola do taxi proporcional ao nro de infetados
 """
 
 ## Imports
