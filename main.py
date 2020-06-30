@@ -49,6 +49,7 @@ import csv
 import random
 from postgis import Polygon,MultiPolygon
 from postgis.psycopg import register
+from copy import deepcopy
 
 ## Functions
 def update_to_infected(pos):
@@ -133,6 +134,7 @@ for taxi_id in taxi_porto:
 for pos in taxi_position:
     update_to_infected(pos)
 
+
 # From Lisboa
 taxi_lisboa = [ 20093187,
                 20092692,
@@ -151,6 +153,8 @@ for taxi_id in taxi_lisboa:
 
 for pos in taxi_position:
     update_to_infected(pos)
+
+
 
 
 
@@ -215,24 +219,23 @@ for row in offsets: # row [ [x,y], ... ]
         infected = taxis_info[taxi_column][0]
         c += [ "red" if infected else "green" ]
     
-    taxis_info_history.append(taxis_info)
-    
+    taxis_info_history.append(deepcopy(taxis_info))
+
     colors.append(c)  
     c = [] 
-
     print(len(taxis_info_history))
 
 
 
-with open("./../data/random_colors.csv", "w", newline="") as csv_file:
-    writer = csv.writer(csv_file, delimiter=',')
-    for l in colors: 
-        print("%s" %(l[0]), end='', file=csv_file)
-        for j in range(1,len(l)):
-            print(",%s" %(l[j]),end='', file=csv_file)
-        print("", file=csv_file)
+# with open("./../data/random_colors.csv", "w", newline="") as csv_file:
+#     writer = csv.writer(csv_file, delimiter=',')
+#     for l in colors: 
+#         print("%s" %(l[0]), end='', file=csv_file)
+#         for j in range(1,len(l)):
+#             print(",%s" %(l[j]),end='', file=csv_file)
+#         print("", file=csv_file)
 
-with open("./../data/random_taxis_info_history.csv", "w", newline="") as csv_file:
+with open("./../data/random_taxis_info_history2.csv", "w", newline="") as csv_file:
     writer = csv.writer(csv_file, delimiter=',')
     for dic in taxis_info_history:
         keys = sorted(dic.keys())
