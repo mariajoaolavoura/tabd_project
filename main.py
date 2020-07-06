@@ -56,7 +56,7 @@ def update_to_infected(pos):
     inf, c, t = taxis_info[pos]
     taxis_info[pos] = [1, c, t]
 
-def distanceUnder(dist, lista, coord):
+def distance_under(dist, lista, coord):
     index_coord = []
     j=0
     for i in lista:
@@ -165,12 +165,13 @@ taxis_info_history [ { 0:[i,c,c], 1:[], ... }, {...}, ... ]
 """
 
 dummy = [0.000000, 0.000000]
-taxis_info_history, colors, c = [], [], []
+taxis_info_history, colors, shape = [], [], []
 
 ts_to_infected = 60 # ts = 10s, 1min= 6 ts, 10min = 60 ts
 infection_radius = 50
 
 for row in offsets: # row [ [x,y], ... ]
+    c, s = [], []
     for taxi_column in range(0, len(row)):
         coord = row[taxi_column] # coord [x,y]
         if coord != dummy:
@@ -178,7 +179,7 @@ for row in offsets: # row [ [x,y], ... ]
             # if taxi is infected
             if (infected):
                 # verify its neighbours taxis within 50m
-                column_neig_50m = distanceUnder(infection_radius, row, coord) # column in row of offsets
+                column_neig_50m = distance_under(infection_radius, row, coord) # column in row of offsets
                 for neig_column in column_neig_50m:
                     coord = row[neig_column]
                     neig_infected, neig_contact_time, neig_transmission = taxis_info[neig_column]
@@ -213,27 +214,37 @@ for row in offsets: # row [ [x,y], ... ]
                         
                         # if not 10%, it's not infected and nedds to wait another minute
                         else:
-                            taxis_info[neig_column] = [0, 0, 0]
-                    
+                            taxis_info[neig_column] = [0, 0, 0]    
 
         infected = taxis_info[taxi_column][0]
-        c += [ "red" if infected else "green" ]
-    
+        transmission = taxis_info[taxi_column][2]
+        #c += [ "red" if infected else "green" ]
+        c += [ transmission ]
+        s += [ "x" if infected else "o" ]
     taxis_info_history.append(deepcopy(taxis_info))
 
     colors.append(c)  
-    c = [] 
+    shape.append(s)  
     print(len(taxis_info_history))
 
+max_n_infected = max(colors[-1])
+normed_colors = [[x/max_n_infected for color in colorlist] for color_list in colors]
 
+with open("./../data/random_colors2.csv", "w", newline="") as csv_file:
+    writer = csv.writer(csv_file, delimiter=',')
+    for l in colors: 
+        print("%s" %(l[0]), end='', file=csv_file)
+        for j in range(1,len(l)):
+            print(",%s" %(l[j]),end='', file=csv_file)
+        print("", file=csv_file)
 
-# with open("./../data/random_colors.csv", "w", newline="") as csv_file:
-#     writer = csv.writer(csv_file, delimiter=',')
-#     for l in colors: 
-#         print("%s" %(l[0]), end='', file=csv_file)
-#         for j in range(1,len(l)):
-#             print(",%s" %(l[j]),end='', file=csv_file)
-#         print("", file=csv_file)
+with open("./../data/random_shape.csv", "w", newline="") as csv_file:
+    writer = csv.writer(csv_file, delimiter=',')
+    for l in shape: 
+        print("%s" %(l[0]), end='', file=csv_file)
+        for j in range(1,len(l)):
+            print(",%s" %(l[j]),end='', file=csv_file)
+        print("", file=csv_file)
 
 with open("./../data/random_taxis_info_history2.csv", "w", newline="") as csv_file:
     writer = csv.writer(csv_file, delimiter=',')
